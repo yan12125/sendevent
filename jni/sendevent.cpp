@@ -26,8 +26,7 @@ int main (int argc, char *argv[])
         return 1;
     }
 
-    sleep (10);
-    toggle_screen ();
+    wait_for_screen ();
     sleep (2);
 
     dev_fd = open (argv[1], O_RDWR);

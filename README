@@ -14,8 +14,9 @@ Redirection in adb shell not working, don't know why
 
 2. Replaying events
 (Linux) $ adb push event_input.txt /data/local/tmp
-(adb shell) $ cd /data/local/tmp
-(adb shell) $ ./sendevent /dev/input/event0 event_input.txt
+(adb shell) $ daemonize /data/local/tmp/sendevent /dev/input/event0 /data/local/tmp/event_input.txt
+Now you can exit adb shell and unplug the USB cable. Events will be replayed when the power button is pressed.
 
 Important:
-This tool requires root permission.
+1. This tool requires root permission.
+2. (Linux) $ adb shell daemonize .... does not work (???)
