@@ -1,0 +1,21 @@
+How to build:
+(Linux) $ ndk-build
+Theoretically works on Windows and Mac but not tested.
+(Linux) $ adb push libs/armeabi/sendevent /data/local/tmp/
+
+How to use:
+0. Prerequisites
+device $ getevent -t
+Touch the screen and check which device file is the target, for example /dev/input/event0 on flame
+
+1. Recording events
+(Linux) $ adb shell getevent -t /dev/input/event0 > event_input.txt
+Redirection in adb shell not working, don't know why
+
+2. Replaying events
+(Linux) $ adb push event_input.txt /data/local/tmp
+(adb shell) $ cd /data/local/tmp
+(adb shell) $ ./sendevent /dev/input/event0 event_input.txt
+
+Important:
+This tool requires root permission.
