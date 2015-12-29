@@ -7,6 +7,7 @@
 #include <linux/input.h>
 #include <errno.h>
 #include <unistd.h> // usleep, write
+#include "screen.h"
 
 int main (int argc, char *argv[])
 {
@@ -24,6 +25,10 @@ int main (int argc, char *argv[])
         fprintf (stderr, "usage: %s device_path event_data\n", argv[0]);
         return 1;
     }
+
+    sleep (10);
+    toggle_screen ();
+    sleep (2);
 
     dev_fd = open (argv[1], O_RDWR);
     if (dev_fd < 0) {
@@ -77,5 +82,9 @@ int main (int argc, char *argv[])
             return -1;
         }
     }
+
+    sleep (2);
+    toggle_screen ();
+
     return 0;
 }
