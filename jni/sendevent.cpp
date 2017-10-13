@@ -20,27 +20,37 @@ int main (int argc, char *argv[])
     float timestamp = -1, old_timestamp = -1;
     const size_t BUF_SIZE = 256;
     char buf[BUF_SIZE];
+    int screen_id;
 
-    if (argc != 3) {
-        fprintf (stderr, "usage: %s device_path event_data\n", argv[0]);
+    if (argc != 4) {
+        fprintf (stderr, "usage: %s screen_id powerbutton_id event_data\n", argv[0]);
         return 1;
     }
 
-    wait_for_screen ();
+    screen_id = atoi(argv[2]);
+    wait_for_screen (screen_id);
     sleep (2);
 
-    dev_fd = open (argv[1], O_RDWR);
+    if (strcmp (argv[1], "/dev/null") != 0)
+    {
+        sprintf (buf, "/dev/input/event%d", atoi(argv[1]));
+    }
+    else
+    {
+        strcpy (buf, argv[1]);
+    }
+    dev_fd = open (buf, O_RDWR);
     if (dev_fd < 0) {
-        fprintf (stderr, "could not open device %s, %s\n", argv[1], strerror (errno));
+        fprintf (stderr, "could not open device %s, %s\n", buf, strerror (errno));
         return 1;
     }
-    if (strcmp (argv[1], "/dev/null") != 0 && ioctl (dev_fd, EVIOCGVERSION, &version)) {
-        fprintf (stderr, "could not get driver version for %s, %s\n", argv[1], strerror (errno));
+    if (strcmp (buf, "/dev/null") != 0 && ioctl (dev_fd, EVIOCGVERSION, &version)) {
+        fprintf (stderr, "could not get driver version for %s, %s\n", buf, strerror (errno));
         return 1;
     }
-    input_file = fopen (argv[2], "rb");
+    input_file = fopen (argv[3], "rb");
     if (!input_file) {
-        fprintf (stderr, "could not open input file %s, %s\n", argv[2], strerror (errno));
+        fprintf (stderr, "could not open input file %s, %s\n", argv[3], strerror (errno));
         return 1;
     }
     while (true) {
@@ -83,7 +93,7 @@ int main (int argc, char *argv[])
     }
 
     sleep (2);
-    toggle_screen ();
+    toggle_screen (screen_id);
 
     return 0;
 }
